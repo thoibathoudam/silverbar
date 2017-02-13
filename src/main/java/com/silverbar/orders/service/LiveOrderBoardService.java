@@ -51,7 +51,6 @@ public class LiveOrderBoardService {
 	public Map<ORDER_TYPE, Map<Double, Double>> getAllOrderSummary() {
 		Map<ORDER_TYPE, Map<Double, Double>> ordersByType = orderDAO.findAllLiveOrders().stream().collect(
 				groupingBy(Order::getOrderType, groupingBy(Order::getPrice, summingDouble(Order::getQuantity))));
-
 		return ordersByType;
 	}
 

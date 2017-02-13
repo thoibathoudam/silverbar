@@ -17,6 +17,7 @@ import org.junit.Test;
 import com.silverbar.orders.dao.OrderDAO;
 import com.silverbar.orders.domain.Order;
 import com.silverbar.orders.exception.OrderNotFoundException;
+import com.silverbar.orders.util.ORDER_TYPE;
 
 public class LiveOrderBoardServiceTest {
 
@@ -45,8 +46,8 @@ public class LiveOrderBoardServiceTest {
 		orderBoard.register(order2);
 		Set<Order> liveOrders = orderBoard.getLiveOrders();
 		assertThat(liveOrders).as("# of live orders").isNotEmpty().hasSize(2);
-		assertThat(liveOrders).extracting("userId", "quantity", "price", "orderType")
-				.contains(tuple(1L, 1.0, 1.2, BUY), tuple(2L, 1.0, 1.2, BUY));
+		assertThat(liveOrders).extracting("userId", "quantity", "price", "orderType").contains(tuple(1L, 1.0, 1.2, BUY),
+				tuple(2L, 1.0, 1.2, BUY));
 	}
 
 	@Test
@@ -60,7 +61,7 @@ public class LiveOrderBoardServiceTest {
 		assertThat(liveOrders).extracting("userId", "quantity", "price", "orderType")
 				.contains(tuple(1L, 1.0, 1.2, BUY));
 	}
-	
+
 	@Test
 	public void cancelOrderShouldRemoveOrder() {
 		Order order = new Order(1L, 1.0, 1.2, BUY);
@@ -85,7 +86,7 @@ public class LiveOrderBoardServiceTest {
 		assertThat(liveOrders).as("# of live orders").isNotEmpty()
 				.extracting("userId", "quantity", "price", "orderType").containsOnly(tuple(1L, 2.0, 1.2, SELL));
 	}
-	
+
 	@Test
 	public void cancelOneOrderShouldRemoveOnlyTheMatchingCancelledOrder() {
 		Order order1 = new Order(1L, 1.0, 1.2, BUY);
@@ -107,8 +108,8 @@ public class LiveOrderBoardServiceTest {
 		Order order = new Order(1L, 1.0, 1.2, BUY);
 		orderBoard.register(order);
 		Order nonExistentOrder = new Order(-999L, 1.0, 1.2, SELL);
-		assertThatExceptionOfType(OrderNotFoundException.class).isThrownBy(() -> orderBoard.cancelOrder(nonExistentOrder))
-				.withMessage("No matching order found");
+		assertThatExceptionOfType(OrderNotFoundException.class)
+				.isThrownBy(() -> orderBoard.cancelOrder(nonExistentOrder)).withMessage("No matching order found");
 	}
 
 	@Test
@@ -119,8 +120,8 @@ public class LiveOrderBoardServiceTest {
 		orderBoard.register(order2);
 		Set<Order> liveOrders = orderBoard.getLiveOrders();
 		assertThat(liveOrders).as("# of live orders").isNotEmpty().hasSize(2);
-		assertThat(liveOrders).extracting("userId", "quantity", "price", "orderType")
-				.contains(tuple(1L, 1.0, 1.2, BUY), tuple(2L, 2.0, 3.6, BUY));
+		assertThat(liveOrders).extracting("userId", "quantity", "price", "orderType").contains(tuple(1L, 1.0, 1.2, BUY),
+				tuple(2L, 2.0, 3.6, BUY));
 	}
 
 	@Test
@@ -189,6 +190,11 @@ public class LiveOrderBoardServiceTest {
 				.containsExactly(entry(306.0, 5.5), entry(307.0, 1.5), entry(310.0, 1.2));
 	}
 
+	@Test
+	public void getOrderSummaryOnEmptyDataSetShouldReturnAnEmptyMap() {
+		Map<Double, Double> liveOrders = orderBoard.getOrderSummary(SELL);
+		assertThat(liveOrders).as("Live SELL orders summary in on empty orders").isEmpty();
+	}
 
 	@Test
 	public void getSummaryDisplayShouldReturnTheDisplayText() {
@@ -197,7 +203,7 @@ public class LiveOrderBoardServiceTest {
 		List<String> orderDisplay = orderBoard.getOrderSummaryAsDisplayText(SELL);
 		assertThat(orderDisplay).hasSize(1).as("Display Text").containsExactly("1.0 kg for £300.0");
 	}
-	
+
 	@Test
 	public void getSummaryDisplayShouldReturnTheDisplayTextForSellOrdersInAscOrderOfPrice() {
 		Order order1 = new Order(1L, 1.0, 300.0, SELL);
@@ -205,9 +211,10 @@ public class LiveOrderBoardServiceTest {
 		Order order2 = new Order(2L, 2.0, 200.0, SELL);
 		orderBoard.register(order2);
 		List<String> orderDisplay = orderBoard.getOrderSummaryAsDisplayText(SELL);
-		assertThat(orderDisplay).hasSize(2).as("Display Text").containsExactly("2.0 kg for £200.0", "1.0 kg for £300.0");
+		assertThat(orderDisplay).hasSize(2).as("Display Text").containsExactly("2.0 kg for £200.0",
+				"1.0 kg for £300.0");
 	}
-	
+
 	@Test
 	public void getSummaryDisplayShouldReturnTheDisplayTextForBuyOrderInDescOrderOfPrice() {
 		Order order1 = new Order(1L, 1.0, 300.0, BUY);
@@ -217,6 +224,7 @@ public class LiveOrderBoardServiceTest {
 		Order order3 = new Order(3L, 2.0, 500.0, BUY);
 		orderBoard.register(order3);
 		List<String> orderDisplay = orderBoard.getOrderSummaryAsDisplayText(BUY);
-		assertThat(orderDisplay).hasSize(3).as("Display Text").containsExactly("2.0 kg for £500.0", "1.0 kg for £300.0", "2.0 kg for £200.0");
+		assertThat(orderDisplay).hasSize(3).as("Display Text").containsExactly("2.0 kg for £500.0", "1.0 kg for £300.0",
+				"2.0 kg for £200.0");
 	}
 }
