@@ -1,11 +1,13 @@
 package com.silverbar.orders.service;
 
 import static com.silverbar.orders.util.ORDER_TYPE.BUY;
+import static com.silverbar.orders.util.ORDER_TYPE.SELL;
 import static java.util.Comparator.comparingDouble;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.summingDouble;
 
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,9 +50,10 @@ public class LiveOrderBoardService {
 				.collect(groupingBy(Order::getPrice, LinkedHashMap::new, summingDouble(Order::getQuantity)));
 	}
 
-	public Map<ORDER_TYPE, Map<Double, Double>> getAllOrderSummary() {
-		Map<ORDER_TYPE, Map<Double, Double>> ordersByType = orderDAO.findAllLiveOrders().stream().collect(
-				groupingBy(Order::getOrderType, groupingBy(Order::getPrice, summingDouble(Order::getQuantity))));
+	public Map<ORDER_TYPE, Map<Double, Double>> getAllOrderSummary() {        
+		Map<ORDER_TYPE, Map<Double, Double>> ordersByType = new HashMap<>();
+		ordersByType.put(BUY, getOrderSummary(BUY));
+		ordersByType.put(SELL, getOrderSummary(SELL));
 		return ordersByType;
 	}
 

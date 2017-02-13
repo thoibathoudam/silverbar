@@ -197,6 +197,27 @@ public class LiveOrderBoardServiceTest {
 	}
 
 	@Test
+	public void getAllOrderSummaryShouldReturnSummaryOfOrdersGroupedByAmountAndSorted() {
+		Order order1 = new Order(1L, 1.0, 1.2, SELL);
+		orderBoard.register(order1);
+		Order order2 = new Order(2L, 2.0, 3.6, BUY);
+		orderBoard.register(order2);
+		Order order3 = new Order(3L, 3.0, 1.2, SELL);
+		orderBoard.register(order3);
+		Order order4 = new Order(4L, 5.8, 6.0, SELL);
+		orderBoard.register(order4);
+		Order order5 = new Order(2L, 2.0, 5.0, BUY);
+		orderBoard.register(order5);
+		Order order6 = new Order(1L, 9.0, 3.5, BUY);
+		orderBoard.register(order6);
+		Map<ORDER_TYPE, Map<Double, Double>> liveOrders = orderBoard.getAllOrderSummary();
+		assertThat(liveOrders.get(SELL)).as("SELL orders sorted in ascending price").containsExactly(entry(1.2, 4.0),
+				entry(6.0, 5.8));
+		assertThat(liveOrders.get(BUY)).as("BUY orders sorted in descending price").containsExactly(entry(5.0, 2.0),
+				entry(3.6, 2.0), entry(3.5, 9.0));
+	}
+
+	@Test
 	public void getSummaryDisplayShouldReturnTheDisplayText() {
 		Order order1 = new Order(1L, 1.0, 300.0, SELL);
 		orderBoard.register(order1);
