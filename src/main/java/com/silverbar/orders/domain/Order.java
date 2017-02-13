@@ -1,14 +1,16 @@
 package com.silverbar.orders.domain;
 
+import com.silverbar.orders.util.ORDER_TYPE;
+
 public class Order {
 
 	private Long userId;
 	private Double quantity;
 	private Double price;
 
-	private String orderType;
+	private ORDER_TYPE orderType;
 	
-	public Order(Long userId, Double quantity, Double price, String orderType) {
+	public Order(Long userId, Double quantity, Double price, ORDER_TYPE orderType) {
 		super();
 		this.userId = userId;
 		this.quantity = quantity;
@@ -28,7 +30,7 @@ public class Order {
 		return price;
 	}
 
-	public String getOrderType() {
+	public ORDER_TYPE getOrderType() {
 		return orderType;
 	}
 	
