@@ -15,9 +15,12 @@ import java.util.stream.Collectors;
 import com.silverbar.orders.dao.OrderDAO;
 import com.silverbar.orders.domain.Order;
 import com.silverbar.orders.util.ORDER_TYPE;
+
+//This class and its dependencies could be managed by Spring in real project.
 public class LiveOrderBoardService {
 
 	private static final String DISPLAY_TEXT = " kg for £";
+	
 	private OrderDAO orderDAO;
 
 	public LiveOrderBoardService(OrderDAO orderDAO) {

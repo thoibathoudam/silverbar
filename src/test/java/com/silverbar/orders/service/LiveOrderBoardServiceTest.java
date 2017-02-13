@@ -17,7 +17,6 @@ import org.junit.Test;
 import com.silverbar.orders.dao.OrderDAO;
 import com.silverbar.orders.domain.Order;
 import com.silverbar.orders.exception.OrderNotFoundException;
-import com.silverbar.orders.util.ORDER_TYPE;
 
 public class LiveOrderBoardServiceTest {
 
@@ -190,26 +189,6 @@ public class LiveOrderBoardServiceTest {
 				.containsExactly(entry(306.0, 5.5), entry(307.0, 1.5), entry(310.0, 1.2));
 	}
 
-	@Test
-	public void getAllOrderSummaryShouldReturnSummaryOfOrdersGroupedByAmountAndSorted() {
-		Order order1 = new Order(1L, 1.0, 1.2, SELL);
-		orderBoard.register(order1);
-		Order order2 = new Order(2L, 2.0, 3.6, BUY);
-		orderBoard.register(order2);
-		Order order3 = new Order(3L, 3.0, 1.2, SELL);
-		orderBoard.register(order3);
-		Order order4 = new Order(4L, 4.0, 6.0, SELL);
-		orderBoard.register(order4);
-		Order order5 = new Order(2L, 2.0, 5.0, BUY);
-		orderBoard.register(order5);
-		Order order6 = new Order(1L, 9.0, 3.5, BUY);
-		orderBoard.register(order6);
-		Map<ORDER_TYPE, Map<Double, Double>> liveOrders = orderBoard.getAllOrderSummary();
-		//assertThat(liveOrders.get(SELL)).as("SELL orders sorted in ascending price").extracting("price", "quantity")
-		//		.containsExactly(tuple(1.2, 4.0), tuple(6.0, 4));
-		//assertThat(liveOrders.get(BUY)).as("BUY orders sorted in descending price").extracting("price", "quantity")
-		//		.containsExactly(tuple(5.0, 2.0), tuple(3.6, 2), tuple(3.5, 9));
-	}
 
 	@Test
 	public void getSummaryDisplayShouldReturnTheDisplayText() {
